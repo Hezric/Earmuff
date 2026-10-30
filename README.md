@@ -24,6 +24,7 @@ Windows 11, Rust's MSVC toolchain with Visual Studio C++ Build Tools, Node.js LT
 Microsoft Edge WebView2 and [Vite+](https://viteplus.dev/guide/) are required.
 
 ```powershell
+#requires -Version 7.0
 git clone https://github.com/Hezric/Earmuff.git
 cd Earmuff
 vp install --frozen-lockfile

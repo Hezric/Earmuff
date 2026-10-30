@@ -22,6 +22,7 @@ Earmuff 守候 Windows 默认输出设备。新设备默认受保护：音量突
 和 Microsoft Edge WebView2，以及 [Vite+](https://viteplus.dev/guide/)。
 
 ```powershell
+#requires -Version 7.0
 git clone https://github.com/Hezric/Earmuff.git
 cd Earmuff
 vp install --frozen-lockfile
