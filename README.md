@@ -12,16 +12,22 @@ A small tray flyout keeps your current output close by. Its settings hold the
 limits, a pause of 1–720 minutes, and English or Simplified Chinese. The window
 follows your Windows theme and accent, then releases its webview when dismissed.
 
+## Install
+
+Download the Windows x64 portable archive from [Releases](https://github.com/Hezric/Earmuff/releases/latest),
+verify it against `SHA256SUMS`, and extract it. Keep WebView2 installed. Launching enables audio protection immediately.
+Login startup remains with your startup manager.
+
 ## Build
 
 Windows 11, Rust's MSVC toolchain with Visual Studio C++ Build Tools, Node.js LTS,
-and Microsoft Edge WebView2 are required. No release has been published yet.
+Microsoft Edge WebView2 and [Vite+](https://viteplus.dev/guide/) are required.
 
 ```powershell
 git clone https://github.com/Hezric/Earmuff.git
 cd Earmuff
-npm ci
-npm run tauri -- build --ci --no-bundle -- --locked
+vp install --frozen-lockfile
+vp exec tauri build --ci --no-bundle -- --locked
 ```
 
 The portable executable is `src-tauri/target/release/earmuff.exe`. Launching it
@@ -33,18 +39,19 @@ manager, such as Lineup.
 Give this prompt to an agent that can build Windows software:
 
 ```text
-Build Earmuff from https://github.com/Hezric/Earmuff in a local checkout.
-Read its AGENTS.md. Check the Windows 11, MSVC Rust/C++ toolchain,
-Node.js LTS, and WebView2 prerequisites. Run npm ci, then
-npm run tauri -- build --ci --no-bundle -- --locked.
-Verify the build produced src-tauri/target/release/earmuff.exe without
-launching it. Explain that launching enables audio protection, and ask
-before launching or configuring login startup.
+Install Earmuff from https://github.com/Hezric/Earmuff/releases/latest.
+Verify the Windows x64 archive against its SHA256SUMS, extract it, and check
+that earmuff.exe exists without launching it. Preserve existing settings
+and startup registration. Explain that launching enables volume protection; obtain authorization before launch.
+Install skills/earmuff through my existing Skill management. If I have
+none, ask first and recommend `npx skills add Hezric/Earmuff -g` using Vercel's
+skills CLI (https://github.com/vercel-labs/skills; Node.js 22.20+).
+Verify the installed Skill's path and complete contents too.
 ```
 
 ## Use
 
-Click the tray icon to open Earmuff; right-click for pause, resume, and quit.
+Click the tray icon to toggle Earmuff; right-click for pause, resume, and quit.
 The footer gear switches between devices and settings. Pause presets are 15,
 30, 60, and 120 minutes; custom durations save on Enter or focus loss. Pausing
 again uses the saved duration. Restarting Earmuff resumes protection.
@@ -57,9 +64,14 @@ Settings are stored in `%APPDATA%\Earmuff\Earmuff.ini`. If the file cannot be
 read, Earmuff protects devices with safe defaults and shows the error. Changes
 in the flyout are saved atomically.
 
+Solid headphone cups mean protection is active; outline cups mean the current
+output is unprotected, and two bars mark a pause. All states retain full contrast.
+The native flyout uses Windows shadow and corners. Hidden icons open it in the
+notification corner; outside clicks and Escape dismiss it.
+
 ## Preview and contribute
 
-`npm run dev` opens a safe browser frontend at `http://127.0.0.1:1420` with
+`vp run dev` opens a safe browser frontend at `http://127.0.0.1:1420` with
 simulated devices. Preview Chinese with `?lang=zh` or English with `?lang=en`;
 `&theme=light` and `&theme=dark` are preview-only controls.
 

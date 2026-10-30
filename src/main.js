@@ -1,9 +1,11 @@
+import { createMotion, fitPanel, flyout, statusCard, pauseSettings, languageSettings } from 'linen-ui';
+import { sharedGlyph } from 'linen-ui/glyphs';
 import { invoke, isTauri } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { localeFor, mockState, mockUpdate, text, parsePauseMinutes, pauseLabel } from './state.js';
 import './style.css';
 const glyphs = import.meta.glob('../assets/fluent-v1/*.svg', { query: '?raw', import: 'default', eager: true });
-const icon = (name, size = 20, filled = false) => glyphs[`../assets/fluent-v1/${name}_${size}_${filled ? 'filled' : 'regular'}.svg`].replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
+const icon = (name, size = 20, filled = false) => (glyphs[`../assets/fluent-v1/${name}_${size}_${filled ? 'filled' : 'regular'}.svg`] || sharedGlyph(`${name}_${size}_${filled ? 'filled' : 'regular'}`)).replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 const native = isTauri();
 const params = new URLSearchParams(location.search);
 const systemLanguage = localeFor(native ? navigator.language : params.get('lang') || navigator.language);
@@ -12,101 +14,23 @@ let state = native ? { ...mockState(), devices: [], current: null, currentVolume
 let deviceSignature = '';
 let localError = '';
 let settingsOpen = false;
-let lastHeight = 0;
-let fitRequest = Promise.resolve();
-let flyoutLayout;
 let pauseInvalid = false;
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const motion = { duration: 200, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' };
 let motionReady = false;
 document.body.classList.toggle('native', native);
 if (!native && ['light', 'dark'].includes(params.get('theme'))) document.documentElement.dataset.theme = params.get('theme');
 const root = document.querySelector('#app');
-root.innerHTML = `<section class="flyout" aria-label="Earmuff">
-  <header class="header"><span class="brand-icon">${icon('headphones')}</span><span class="brand">Earmuff</span></header>
-  <div class="current"><span class="badge" id="current-icon"></span><div class="current-copy"><div id="current-name"></div><p id="current-status" role="status"></p></div><div class="volume"><span id="volume">—</span><small>%</small></div></div>
-  <div id="views"><section id="device-view" class="device-view"><div class="device-heading"><h1 id="devices-label"></h1><span id="protected-label"></span></div>
+root.innerHTML=flyout({name:'Earmuff',icon:icon('headphones',20),card:statusCard('<div class="volume"><span id="volume">—</span><small>%</small></div>'),main:`<section id="device-view" class="device-view"><div class="device-heading"><h1 id="devices-label"></h1><span id="protected-label"></span></div>
   <section class="device-list" aria-labelledby="devices-label"><div id="main-devices"></div><button id="fold" class="device-row fold" aria-expanded="false" aria-controls="folded-wrap"><span class="chevron">${icon('chevron_down')}</span><span id="other-label"></span></button><div id="folded-wrap" class="folded"><div id="folded-devices" class="folded-devices"></div></div><p id="empty" class="empty" hidden></p></section>
-  </section><section id="settings" hidden><div class="settings">
-    <h2 id="protection-label"></h2><div class="limits"><div class="slider-label"><label for="cap" id="cap-label"></label><output for="cap" id="cap-value"></output></div><input id="cap" type="range" min="10" max="100" step="1"><div class="slider-label drop-label"><label for="drop" id="drop-label"></label><output for="drop" id="drop-value"></output></div><input id="drop" type="range" min="0" max="100" step="1"></div>
-    <h2 id="pause-for-label"></h2><div class="pause-row"><div class="segments presets" role="group" aria-labelledby="pause-for-label"><button data-minutes="15">15</button><button data-minutes="30">30</button><button data-minutes="60">60</button><button data-minutes="120">120</button></div><input id="pause-minutes" class="pause-minutes" type="text" inputmode="numeric" maxlength="4" aria-labelledby="pause-for-label" aria-describedby="pause-error" autocomplete="off" spellcheck="false"><span id="minutes-unit" class="minutes-unit"></span></div><div id="pause-error-wrap" class="message" aria-hidden="true"><div><p id="pause-error" class="pause-error" role="alert"></p></div></div>
-    <h2 id="language-label"></h2><div class="segments" role="group" aria-labelledby="language-label"><button data-language="system"></button><button data-language="zh">简体中文</button><button data-language="en">English</button></div><div class="about"><span>Earmuff 0.1.0</span><a id="github" href="https://github.com/Hezric/Earmuff" target="_blank" rel="noreferrer">GitHub ${icon('open',24)}</a></div>
-  </div></section></div><div id="error-wrap" class="message" aria-hidden="true"><div><p id="error" role="alert"></p></div></div><div class="footer-area"><div class="divider"></div><footer><button id="pause" class="button" type="button"></button><button id="gear" class="button icon-button" aria-expanded="false" aria-controls="settings">${icon('settings',24)}</button></footer></div>
-</section>`;
+  </section>`,settings:`<h2 id="protection-label"></h2><div class="limits"><div class="slider-label"><label for="cap" id="cap-label"></label><output for="cap" id="cap-value"></output></div><input id="cap" type="range" min="10" max="100" step="1"><div class="slider-label drop-label"><label for="drop" id="drop-label"></label><output for="drop" id="drop-value"></output></div><input id="drop" type="range" min="0" max="100" step="1"></div>${pauseSettings()}${languageSettings('Earmuff','0.1.0',icon('open',24))}`,gear:icon('settings',24)});
 const cap = document.querySelector('#cap');
 const drop = document.querySelector('#drop');
-const contentValues = new WeakMap();
-function setContent(id, value, html = false) {
-  const element = typeof id === 'string' ? document.getElementById(id) : id;
-  value = String(value);
-  if (contentValues.get(element) === value) return;
-  const old = element.querySelector(':scope > .copy-current');
-  const oldPosition = old ? [old.offsetLeft, old.offsetTop] : [0, 0];
-  const oldWidth = element.getBoundingClientRect().width;
-  element.querySelectorAll(':scope > .copy-outgoing').forEach(node => node.remove());
-  const content = document.createElement('span'); content.className = 'copy-current';
-  if (html) content.innerHTML = value; else content.textContent = value;
-  element.replaceChildren(content);
-  contentValues.set(element, value);
-  element.classList.add('motion-copy');
-  if (old && motionReady && !reducedMotion.matches) {
-    if (element.id === 'pause' || element.id === 'volume') element.animate([{ width: `${oldWidth}px` }, { width: `${element.getBoundingClientRect().width}px` }], motion);
-    old.className = 'copy-outgoing'; old.style.left = `${oldPosition[0]}px`; old.style.top = `${oldPosition[1]}px`; old.setAttribute('aria-hidden', 'true'); element.append(old);
-    old.animate([{ opacity: 1 }, { opacity: 0 }], { ...motion, fill: 'forwards' }).finished.finally(() => old.remove()).catch(() => {});
-    content.animate([{ opacity: 0, transform: 'translateY(3px)' }, { opacity: 1, transform: 'none' }], motion);
-  }
-}
-const setText = (id, value) => setContent(id, value);
-function animateView(before, outgoing) {
-  const views = document.querySelector('#views');
-  views.getAnimations().forEach(animation => animation.cancel());
-  views.querySelectorAll(':scope > .view-outgoing').forEach(node => node.remove());
-  const height = views.getBoundingClientRect().height;
-  if (!motionReady || reducedMotion.matches) return;
-  if (Math.abs(height - before) > .5) views.animate([{ height: `${before}px` }, { height: `${height}px` }], motion);
-  if (outgoing) {
-    outgoing.removeAttribute('id'); outgoing.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
-    outgoing.classList.add('view-outgoing'); outgoing.inert = true; outgoing.setAttribute('aria-hidden', 'true');
-    outgoing.style.height = `${before}px`; views.append(outgoing);
-    outgoing.animate([{ opacity: 1 }, { opacity: 0 }], { ...motion, fill: 'forwards' }).finished.finally(() => outgoing.remove()).catch(() => {});
-    views.querySelector(':scope > section:not([hidden])').animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], motion);
-  }
-}
+const {setContent,setText,animateView,reducedMotion,motion}=createMotion(root,()=>motionReady);
 function updateSlider(input) {
   input.style.setProperty('--progress', `${100 * (input.value - input.min) / (Number(input.max) - Number(input.min) || 1)}%`);
   setText(`${input.id}-value`, `${input.value}%`);
   input.setAttribute('aria-valuetext', `${input.value}%`);
 }
-function fit() {
-  if (!native) return;
-  const panel = root.querySelector('.flyout');
-  // Measure the content before applying the monitor cap.
-  const maxHeight = panel.style.maxHeight;
-  panel.style.maxHeight = 'none';
-  const height = Math.ceil(panel.scrollHeight);
-  panel.style.maxHeight = maxHeight;
-  const position = () => {
-    if (!flyoutLayout) return;
-    const visibleHeight = panel.getBoundingClientRect().height;
-    root.style.top = `${flyoutLayout.topAnchored ? 12 : Math.max(12, Math.min(flyoutLayout.anchorBottom - visibleHeight, flyoutLayout.limit + 12 - visibleHeight))}px`;
-  };
-  position();
-  if (height !== lastHeight) {
-    lastHeight = height;
-    // Older animation frames must not resize the window after a newer frame.
-    fitRequest = fitRequest.then(async () => {
-      const targetHeight = lastHeight;
-      const layout = await invoke('resize_flyout', { height: targetHeight });
-      if (layout?.limit > 0) {
-        flyoutLayout = layout;
-        panel.style.maxHeight = `${layout.limit}px`;
-        document.querySelector('#views').classList.toggle('scroll', targetHeight > layout.limit);
-        position();
-      }
-    }).catch(() => {});
-  }
-  return fitRequest;
-}
+const fit=native ? fitPanel(root,invoke) : ()=>{};
 function render() {
   const views = document.querySelector('#views');
   const before = views.getBoundingClientRect().height;
@@ -239,10 +163,10 @@ motionReady = true;
 reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) document.getAnimations().forEach(animation => animation.finish()); requestAnimationFrame(fit); });
 if (native) {
   await fit();
-  const originalStyle = await invoke('prepare_flyout', { height: root.querySelector('.flyout').scrollHeight });
+  await invoke('prepare_flyout', { height: root.querySelector('.flyout').scrollHeight });
   await new Promise(requestAnimationFrame);
   await new Promise(requestAnimationFrame);
-  await invoke('present_flyout', { originalStyle });
+  await invoke('present_flyout');
   new ResizeObserver(fit).observe(root.querySelector('#folded-wrap'));
   new ResizeObserver(fit).observe(root.querySelector('.flyout'));
 } else if (!reducedMotion.matches) root.querySelector('.flyout').animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], motion);

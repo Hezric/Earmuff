@@ -18,14 +18,8 @@ use tauri::{AppHandle, Emitter};
 use windows::{
     core::w,
     Foundation::TypedEventHandler,
-    Win32::{
-        Globalization::GetUserDefaultUILanguage,
-        System::{
-            Com::{CoInitializeEx, CoUninitialize, COINIT_MULTITHREADED},
-            Registry::*,
-        },
-    },
-    UI::ViewManagement::{UIColorType, UISettings},
+    Win32::System::Com::{CoInitializeEx, CoUninitialize, COINIT_MULTITHREADED},
+    UI::ViewManagement::UISettings,
 };
 
 #[derive(Clone, Deserialize)]
@@ -37,81 +31,8 @@ pub enum Action {
     SetPauseMinutes { minutes: u16 },
     TogglePause,
 }
-#[derive(Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Appearance {
-    pub language: String,
-    pub dark: bool,
-    pub accent: String,
-    pub accent_ink: String,
-    pub taskbar_light: bool,
-    pub taskbar_small: bool,
-}
-impl Appearance {
-    pub fn read(colors: &UISettings) -> Self {
-        let color = colors.GetColorValue(UIColorType::Accent).ok();
-        let accent = color
-            .map(|c| format!("#{:02x}{:02x}{:02x}", c.R, c.G, c.B))
-            .unwrap_or("#0067c0".into());
-        let accent_ink = color
-            .map(|c| {
-                if 299 * c.R as u32 + 587 * c.G as u32 + 114 * c.B as u32 > 150000 {
-                    "#000000"
-                } else {
-                    "#ffffff"
-                }
-            })
-            .unwrap_or("#ffffff")
-            .into();
-        let language = unsafe {
-            if GetUserDefaultUILanguage() & 0x3ff == 4 {
-                "zh"
-            } else {
-                "en"
-            }
-        }
-        .into();
-        Self {
-            language,
-            dark: registry_light(w!("AppsUseLightTheme")) == 0,
-            taskbar_light: registry_light(w!("SystemUsesLightTheme")) != 0,
-            taskbar_small: taskbar_size() == 1,
-            accent,
-            accent_ink,
-        }
-    }
-}
-fn registry_light(name: windows::core::PCWSTR) -> u32 {
-    let mut value = 1u32;
-    unsafe {
-        let _ = RegGetValueW(
-            HKEY_CURRENT_USER,
-            w!("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"),
-            name,
-            RRF_RT_REG_DWORD,
-            None,
-            Some((&mut value as *mut u32).cast()),
-            Some(&mut 4),
-        );
-    }
-    value
-}
-fn taskbar_size() -> u32 {
-    let mut value = 0u32;
-    unsafe {
-        // shortcut: TaskbarSize is an undocumented shell value; revisit if Windows changes its modes.
-        let _ = RegGetValueW(
-            HKEY_CURRENT_USER,
-            w!("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
-            w!("TaskbarSize"),
-            RRF_RT_REG_DWORD,
-            None,
-            Some((&mut value as *mut u32).cast()),
-            Some(&mut 4),
-        );
-    }
-    value
-}
+pub use linen_tray::Appearance;
+use linen_tray::{read_taskbar_small, registry_light};
 #[derive(Clone, Serialize)]
 pub struct Snapshot {
     #[serde(flatten)]
@@ -319,7 +240,7 @@ fn run_loop(
                     }
                     // Taskbar size and DPI changes need no audio work or resident webview.
                     let mut snapshot = idle_snapshot.clone();
-                    snapshot.appearance.taskbar_small = taskbar_size() == 1;
+                    snapshot.appearance.taskbar_small = read_taskbar_small();
                     snapshot.appearance.taskbar_light =
                         registry_light(w!("SystemUsesLightTheme")) != 0;
                     appearance.taskbar_small = snapshot.appearance.taskbar_small;
