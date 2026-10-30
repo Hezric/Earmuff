@@ -42,7 +42,6 @@ if (!native && ["light", "dark"].includes(params.get("theme")))
 const root = document.querySelector("#app");
 root.innerHTML = flyout({
   name: "Earmuff",
-  icon: icon("headphones", 20),
   card: statusCard('<div class="volume"><span id="volume">—</span><small>%</small></div>'),
   main: `<section id="device-view" class="device-view"><div class="device-heading"><h1 id="devices-label"></h1><span id="protected-label"></span></div>
   <section class="device-list" aria-labelledby="devices-label"><div id="main-devices"></div><button id="fold" class="device-row fold" aria-expanded="false" aria-controls="folded-wrap"><span class="chevron">${icon("chevron_down")}</span><span id="other-label"></span></button><div id="folded-wrap" class="folded"><div id="folded-devices" class="folded-devices"></div></div><p id="empty" class="empty" hidden></p></section>
@@ -85,7 +84,6 @@ function render() {
   const current = state.devices.find((d) => d.id === state.current);
   const paused = state.pauseRemaining > 0;
   const inactive = paused || !current?.protected || !!state.error;
-  root.querySelector(".header").classList.toggle("inactive", inactive);
   root.querySelector(".badge").classList.toggle("inactive", inactive);
   setContent(
     "current-icon",
