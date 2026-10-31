@@ -26,12 +26,15 @@ test("browser mock protects new devices, folds others, and updates each control"
   assert.equal(mockUpdate(state, { type: "togglePause" }).pauseRemaining, 3600);
   assert.equal(mockUpdate(state, { type: "togglePause" }).pauseRemaining, 0);
 });
-test("app opens without a resident webview or startup registration", () => {
+test("app configuration has no resident webview and matches the package version", () => {
   const config = JSON.parse(
     readFileSync(new URL("../src-tauri/tauri.conf.json", import.meta.url), "utf8"),
   );
   assert.deepEqual(config.app.windows, []);
-  assert.equal(config.version, "0.1.0");
+  const manifest = JSON.parse(
+    readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+  );
+  assert.equal(config.version, manifest.version);
 });
 test("folded devices keep their individual protection control", () => {
   const state = mockState();
