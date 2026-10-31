@@ -14,6 +14,10 @@ follows your Windows theme and accent, then releases its webview when dismissed.
 
 ## Install
 
+With Scoop, run `scoop bucket add zephyr https://github.com/Hezric/ScoopZephyr`
+and `scoop install zephyr/earmuff`. Use the executable under Scoop's `current`
+directory for login startup so upgrades keep the same path.
+
 Download the Windows x64 portable archive from [Releases](https://github.com/Hezric/Earmuff/releases/latest),
 verify it against `SHA256SUMS`, and extract it. Keep WebView2 installed. Launching enables audio protection immediately.
 Login startup remains with your startup manager.
@@ -57,16 +61,16 @@ The footer gear switches between devices and settings. Pause presets are 15,
 30, 60, and 120 minutes; custom durations save on Enter or focus loss. Pausing
 again uses the saved duration. Restarting Earmuff resumes protection.
 
-Virtual outputs and display audio start under **Other devices**. Using one as
-your default output moves it into the main list permanently. Turning a device's
+Virtual outputs and display audio stay under **Other devices**, including when
+used as the default output. Turning a device's
 switch off leaves its volume untouched, including at 100%.
 
 Settings are stored in `%APPDATA%\Earmuff\Earmuff.ini`. If the file cannot be
 read, Earmuff protects devices with safe defaults and shows the error. Changes
 in the flyout are saved atomically.
 
-Solid headphone cups mean protection is active; outline cups mean the current
-output is unprotected, and two bars mark a pause. All states retain full contrast.
+A round check badge means protection is active; plain headphones mean the current
+output is unprotected, and a round pause badge marks a pause. All states retain full contrast.
 The native flyout uses Windows shadow and corners. Hidden icons open it in the
 notification corner; outside clicks and Escape dismiss it.
 
