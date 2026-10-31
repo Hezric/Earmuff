@@ -12,6 +12,9 @@ Earmuff 守候 Windows 默认输出设备。新设备默认受保护：音量突
 
 ## 安装
 
+使用 Scoop 时，先运行 `scoop bucket add zephyr https://github.com/Hezric/ScoopZephyr`，
+再运行 `scoop install zephyr/earmuff`。登录启动指向 Scoop 的 `current` 目录下的程序，升级后无需改路径。
+
 从[发布页](https://github.com/Hezric/Earmuff/releases/latest)下载 Windows x64 便携包，
 对照 `SHA256SUMS` 校验后解压，并保留 WebView2。启动即开启音量保护。
 登录启动交给已有启动管理器。
@@ -51,13 +54,13 @@ Vercel skills CLI：npx skills add Hezric/Earmuff -g（https://github.com/vercel
 暂停预设为 15、30、60、120 分钟，也可以输入自定义分钟数，按 Enter 或移开焦点保存。
 再次暂停会使用已保存的时长；重新启动程序会恢复保护。
 
-虚拟输出和显示器音频默认收在“其他设备”。一旦用作默认输出，就会永久移到主列表。
+虚拟输出和显示器音频始终收在“其他设备”，用作默认输出时也一样。
 关闭某台设备的保护开关后，Earmuff 不会调整它的音量，满格时也一样。
 
 设置保存在 `%APPDATA%\Earmuff\Earmuff.ini`。文件无法读取时，程序会使用安全默认值
 保护设备并显示错误；浮窗中的更改通过原子替换保存。
 
-耳机的实心耳罩表示保护开启，空心耳罩表示当前输出不受保护，两条竖线表示暂停；所有状态保持完整对比度。浮窗使用 Windows 原生阴影和圆角；隐藏图标会在通知区角落打开浮窗，点击外部或按 Esc 关闭。
+耳机上的圆形勾选标记表示保护开启，普通耳机表示当前输出不受保护，圆形暂停标记表示暂停；所有状态保持完整对比度。浮窗使用 Windows 原生阴影和圆角；隐藏图标会在通知区角落打开浮窗，点击外部或按 Esc 关闭。
 
 ## 预览与参与
 
