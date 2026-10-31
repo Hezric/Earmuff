@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2]
+
+### Fixes
+
+- increase right insets and simplify input focus (#7)
+
 ## [0.1.1]
 
 ### Fixes
