@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1]
+
+### Fixes
+
+- use resolved packaging manifest paths (#4)
+
+- stabilize native presentation (#5)
+
 ## [0.1.0]
 
 ### Features
