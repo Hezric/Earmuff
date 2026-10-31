@@ -361,7 +361,6 @@ if (native) {
 }
 render();
 await document.fonts.ready;
-motionReady = true;
 reducedMotion.addEventListener("change", () => {
   if (reducedMotion.matches) document.getAnimations().forEach((animation) => animation.finish());
   requestAnimationFrame(fit);
@@ -372,6 +371,7 @@ if (native) {
   await new Promise(requestAnimationFrame);
   await new Promise(requestAnimationFrame);
   await invoke("present_flyout");
+  document.body.classList.add("presented");
   new ResizeObserver(fit).observe(root.querySelector("#folded-wrap"));
   new ResizeObserver(fit).observe(root.querySelector(".flyout"));
 } else if (!reducedMotion.matches)
@@ -382,6 +382,7 @@ if (native) {
     ],
     motion,
   );
+motionReady = true;
 // The backend owns expiration; this updates only the visible countdown.
 setInterval(() => {
   if (state.pauseRemaining > 0) {
