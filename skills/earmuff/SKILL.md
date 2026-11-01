@@ -5,7 +5,7 @@ description: Install, inspect or configure Earmuff on Windows through its native
 
 # Earmuff
 
-Download the Windows x64 portable archive from the matching signed release in `Hezric/Earmuff`. Verify its SHA256 against that release's `SHA256SUMS` before extracting. Keep an existing installation's settings and login registration intact during an update. The archive contains this Skill and its license notices.
+Download the Windows x64 portable archive from the matching signed release in `Hezric/Earmuff`. Verify its SHA256 against that release's `SHA256SUMS` before extracting. Keep an existing installation's settings and login registration intact during an update. The archive keeps license notices under `licenses/`. Install this Skill separately from the repository.
 
 Launching enables volume protection immediately. Obtain authorization before launching or configuring protection on real outputs. Never raise a real speaker or headset volume for a check; use simulated tests or browser preview.
 

@@ -1,74 +1,41 @@
 <div align="center">
-  <h1>Earmuff</h1>
+  <h1>🎧 Earmuff</h1>
   <p>守住耳边的安静。</p>
+  <p><a href="https://github.com/Hezric/Earmuff/actions/workflows/ci.yml"><img src="https://github.com/Hezric/Earmuff/actions/workflows/ci.yml/badge.svg?branch=main" alt="持续集成"></a> <a href="https://github.com/Hezric/ScoopZephyr#install"><img src="https://img.shields.io/badge/Scoop-Zephyr-blue" alt="Scoop Zephyr"></a> <a href="https://github.com/Hezric/Earmuff/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT 许可"></a></p>
   <p><a href="README.md">English</a> | 简体中文</p>
 </div>
 
-Earmuff 守候 Windows 默认输出设备。新设备默认受保护：音量突然跳到满格时降到
-**10%**，平时超过 **42%** 时压回上限。每台设备都能单独开关保护。
-
-点开托盘浮窗，就能看到当前设备。设置里可以调整音量限制、选择 1–720 分钟的暂停时长，
-以及切换简体中文或英文。浮窗随 Windows 的主题与强调色变化，关闭后释放网页视图。
+Earmuff 守候 Windows 输出设备，防止音量突然升高。新设备默认受保护：音量跳到满格时降至 10%，其他高于 42% 的音量会被压回上限。每台设备都可单独开关保护。
 
 ## 安装
 
-使用 Scoop 时，先运行 `scoop bucket add zephyr https://github.com/Hezric/ScoopZephyr`，
-再运行 `scoop install zephyr/earmuff`。登录启动指向 Scoop 的 `current` 目录下的程序，升级后无需改路径。
+在装有 WebView2 的 Windows 11 上，通过 [ScoopZephyr](https://github.com/Hezric/ScoopZephyr) 安装：
 
-从[发布页](https://github.com/Hezric/Earmuff/releases/latest)下载 Windows x64 便携包，
-对照 `SHA256SUMS` 校验后解压，并保留 WebView2。启动即开启音量保护。
-登录启动交给已有启动管理器。
+```powershell
+scoop bucket add zephyr https://github.com/Hezric/ScoopZephyr
+scoop install zephyr/earmuff
+```
+
+也可从[发布页](https://github.com/Hezric/Earmuff/releases/latest)下载 Windows x64 便携包，对照 `SHA256SUMS` 校验后解压。启动即启用保护。登录启动请另行管理；使用 Scoop 时指向 `current` 目录下的程序。
 
 ## 交给智能体
 
-把下面这段话交给能构建 Windows 软件的智能体：
-
 ```text
 从 https://github.com/Hezric/Earmuff/releases/latest 安装 Earmuff。
-对照 SHA256SUMS 校验 Windows x64 便携包，解压并确认 earmuff.exe 存在，先不启动。
-保留已有设置和登录启动登记。说明启动即开启音量保护，启动前取得授权。
-通过我已有的 Skill 管理方式安装 skills/earmuff。若没有，请先询问，建议使用
-Vercel skills CLI：npx skills add Hezric/Earmuff -g（https://github.com/vercel-labs/skills，
-要求 Node.js 22.20 及以上）。也要确认安装后 Skill 的位置和完整内容。
+对照 SHA256SUMS 校验 Windows x64 便携包，解压并确认 earmuff.exe 存在；不要启动，
+用 (Get-Item <earmuff.exe 路径>).VersionInfo.FileVersion 读取文件版本。
+保留已有设置和登录启动登记。启动会启用音量保护，启动前先取得授权。
+通过我已有的 Skill 管理方式单独安装 earmuff Skill。若没有，请先询问，建议使用
+npx skills add Hezric/Earmuff -g（Vercel skills CLI，https://github.com/vercel-labs/skills；
+要求 Node.js 22.20 及以上）。确认安装位置和完整内容。
 ```
-
-## 构建
-
-需要 Windows 11、MSVC Rust 工具链、Visual Studio C++ Build Tools、Node.js LTS
-和 Microsoft Edge WebView2，以及 [Vite+](https://viteplus.dev/guide/)。
-
-```powershell
-#requires -Version 7.0
-git clone https://github.com/Hezric/Earmuff.git
-cd Earmuff
-vp install --frozen-lockfile
-vp exec tauri build --ci --no-bundle -- --locked
-```
-
-便携程序位于 `src-tauri/target/release/earmuff.exe`，启动后立即开启保护。
-开机启动请交给 Lineup 等启动管理工具。
 
 ## 使用
 
-左键点击托盘图标开关浮窗，右键菜单可暂停、恢复或退出。右下角的齿轮切换设备与设置。
-暂停预设为 15、30、60、120 分钟，也可以输入自定义分钟数，按 Enter 或移开焦点保存。
-再次暂停会使用已保存的时长；重新启动程序会恢复保护。
+单击托盘图标打开面板，右键可暂停、恢复或退出；在设置中选择设备和音量限制。关闭保护的设备不会被调整；重启后恢复保护。设置保存在 `%APPDATA%\Earmuff\Earmuff.toml`。
 
-虚拟输出和显示器音频始终收在“其他设备”，用作默认输出时也一样。
-关闭某台设备的保护开关后，Earmuff 不会调整它的音量，满格时也一样。
+Earmuff 限制的是 Windows 音量百分比，并非实测声压。
 
-设置保存在 `%APPDATA%\Earmuff\Earmuff.toml`。文件无法读取时，程序会使用安全默认值
-保护设备并显示错误；浮窗中的更改通过原子替换保存。
+[使用与行为](https://github.com/Hezric/Earmuff/blob/main/docs/features/volume-guard.md) · [参与贡献与自动化测试](https://github.com/Hezric/Earmuff/blob/main/CONTRIBUTING.md) · [MIT 许可](https://github.com/Hezric/Earmuff/blob/main/LICENSE) · [第三方声明](https://github.com/Hezric/Earmuff/blob/main/THIRD-PARTY-NOTICES.md)
 
-耳机上的圆形勾选标记表示保护开启，普通耳机表示当前输出不受保护，圆形暂停标记表示暂停；所有状态保持完整对比度。浮窗沿用 Linen 的共享阴影和圆角；浮窗统一从右侧滑入当前屏幕右下角，内容向上展开时底栏保持原位；点击外部或按 Esc 关闭。
-
-## 预览与参与
-
-运行 `vp run dev`，在 `http://127.0.0.1:1420` 预览模拟设备，完全不会操作真实音频。
-加上 `?lang=zh` 或 `?lang=en` 可预览语言，`&theme=light`、`&theme=dark`
-仅用于浏览器预览主题。
-
-[参与贡献](CONTRIBUTING.md) · [功能与检查](docs/features/volume-guard.md)
-· [MIT 许可](LICENSE) · [第三方声明](THIRD-PARTY-NOTICES.md)
-
-Earmuff 限制的是 Windows 音量百分比，而非实测声压。
+便携包的 `licenses/` 中附有许可声明。

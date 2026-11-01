@@ -1,5 +1,5 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><title>Earmuff dependency licenses</title>
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Earmuff licenses</title>
 <style>body{font:14px system-ui;max-width:900px;margin:40px auto;padding:20px}pre{white-space:pre-wrap}</style>
-<h1>Earmuff dependency licenses</h1>
+<h1>Earmuff licenses</h1>
 {{#each licenses}}<h2>{{name}}</h2><p>{{#each used_by}}{{crate.name}} {{crate.version}}; {{/each}}</p><pre>{{text}}</pre>{{/each}}
 </html>
