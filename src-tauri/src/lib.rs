@@ -41,7 +41,7 @@ pub fn run() {
                 .map(std::path::PathBuf::from)
                 .ok_or("APPDATA is not available")?
                 .join("Earmuff")
-                .join("Earmuff.ini");
+                .join("Earmuff.toml");
             app.manage(runtime::start(app.handle().clone(), path)?);
             Ok(())
         })

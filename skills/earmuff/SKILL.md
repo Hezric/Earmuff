@@ -9,6 +9,6 @@ Download the Windows x64 portable archive from the matching signed release in `H
 
 Launching enables volume protection immediately. Obtain authorization before launching or configuring protection on real outputs. Never raise a real speaker or headset volume for a check; use simulated tests or browser preview.
 
-Settings live in `%APPDATA%\Earmuff\Earmuff.ini`. The flyout gear holds the cap, full-volume fallback, pause duration and language. Each output has its own protection switch. Unprotected outputs remain untouched. New outputs start protected. Verify requested settings in the UI without changing the Windows default output or startup registration.
+Settings live in `%APPDATA%\Earmuff\Earmuff.toml`. The flyout gear holds the cap, full-volume fallback, pause duration and language. Each output has its own protection switch. Unprotected outputs remain untouched. New outputs start protected. Verify requested settings in the UI without changing the Windows default output or startup registration.
 
 Left-click toggles the flyout; outside clicks and Escape dismiss it. Every icon opens the flyout from the right at the bottom-right corner of the current screen; height changes preserve the footer position. Right-click offers Open, Pause/Resume and Quit. Installation alone does not authorize a live hardware test.

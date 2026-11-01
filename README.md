@@ -65,7 +65,7 @@ Virtual outputs and display audio stay under **Other devices**, including when
 used as the default output. Turning a device's
 switch off leaves its volume untouched, including at 100%.
 
-Settings are stored in `%APPDATA%\Earmuff\Earmuff.ini`. If the file cannot be
+Settings are stored in `%APPDATA%\Earmuff\Earmuff.toml`. If the file cannot be
 read, Earmuff protects devices with safe defaults and shows the error. Changes
 in the flyout are saved atomically.
 
