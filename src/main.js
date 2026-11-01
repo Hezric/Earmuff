@@ -68,10 +68,8 @@ function render() {
   const views = document.querySelector("#views");
   const before = views.getBoundingClientRect().height;
   const previousView = views.querySelector(":scope > section:not([hidden])");
-  let outgoing =
-    previousView && previousView.id !== (settingsOpen ? "settings" : "device-view")
-      ? previousView.cloneNode(true)
-      : null;
+  let viewChanged =
+    previousView && previousView.id !== (settingsOpen ? "settings" : "device-view");
   if (!native) language = state.languageMode === "system" ? systemLanguage : state.languageMode;
   const t = text[language];
   document.documentElement.lang = language === "zh" ? "zh-Hans" : "en";
@@ -131,7 +129,7 @@ function render() {
     language,
   ]);
   if (signature !== deviceSignature) {
-    if (motionReady && !settingsOpen && !outgoing) outgoing = previousView.cloneNode(true);
+    if (motionReady && !settingsOpen) viewChanged = true;
     const focused = document.activeElement?.dataset.device;
     for (const group of ["main-devices", "folded-devices"])
       document.getElementById(group).replaceChildren();
@@ -240,7 +238,7 @@ function render() {
     button.setAttribute("aria-pressed", String(button.dataset.language === state.languageMode));
   }
   document.querySelector("#github").setAttribute("aria-label", t.github);
-  animateView(before, outgoing);
+  animateView(before, viewChanged);
   requestAnimationFrame(fit);
 }
 let pending = Promise.resolve();
@@ -333,7 +331,7 @@ document.addEventListener("keydown", (event) => {
           .animate(
             [
               { opacity: 1, transform: "none" },
-              { opacity: 0, transform: "translateY(12px)" },
+              { opacity: 0, transform: "translateX(calc(100% + var(--flyout-gap)))" },
             ],
             motion,
           )
@@ -372,12 +370,10 @@ if (native) {
   await new Promise(requestAnimationFrame);
   await invoke("present_flyout");
   document.body.classList.add("presented");
-  new ResizeObserver(fit).observe(root.querySelector("#folded-wrap"));
-  new ResizeObserver(fit).observe(root.querySelector(".flyout"));
 } else if (!reducedMotion.matches)
   root.querySelector(".flyout").animate(
     [
-      { opacity: 0, transform: "translateY(12px)" },
+      { opacity: 0, transform: "translateX(calc(100% + var(--flyout-gap)))" },
       { opacity: 1, transform: "none" },
     ],
     motion,

@@ -1,9 +1,5 @@
 @import url("/fonts/noto-ui.css");
 @import "linen-ui/style.css";
-.status-shield {
-  color: var(--accent);
-  flex: none;
-}
 .status-shield svg {
   width: 14px;
   height: 14px;

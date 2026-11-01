@@ -1,8 +1,8 @@
-# Earmuff
-
-A quiet guard for sudden volume jumps.
-
-[简体中文](README_zh-Hans.md)
+<div align="center">
+  <h1>Earmuff</h1>
+  <p>A quiet guard for sudden volume jumps.</p>
+  <p>English | <a href="README_zh-Hans.md">简体中文</a></p>
+</div>
 
 Earmuff watches your default Windows output and brings unexpected loudness back
 within reach. New devices start protected. A jump to full volume drops to **10%**;
@@ -22,7 +22,7 @@ Download the Windows x64 portable archive from [Releases](https://github.com/Hez
 verify it against `SHA256SUMS`, and extract it. Keep WebView2 installed. Launching enables audio protection immediately.
 Login startup remains with your startup manager.
 
-## Build
+### Build
 
 Windows 11, Rust's MSVC toolchain with Visual Studio C++ Build Tools, Node.js LTS,
 Microsoft Edge WebView2 and [Vite+](https://viteplus.dev/guide/) are required.
@@ -39,7 +39,7 @@ The portable executable is `src-tauri/target/release/earmuff.exe`. Launching it
 turns protection on immediately. Earmuff leaves login startup to your startup
 manager, such as Lineup.
 
-### Use with an agent
+## Use with an agent
 
 Give this prompt to an agent that can build Windows software:
 
@@ -71,8 +71,9 @@ in the flyout are saved atomically.
 
 A round check badge means protection is active; plain headphones mean the current
 output is unprotected, and a round pause badge marks a pause. All states retain full contrast.
-The native flyout uses Windows shadow and corners. Hidden icons open it in the
-notification corner; outside clicks and Escape dismiss it.
+The flyout uses the shared Linen shadow and corners. Every icon opens it from the
+right at the bottom-right corner of the current screen; the footer stays still as
+content expands upward. Outside clicks and Escape dismiss it.
 
 ## Preview and contribute
 
