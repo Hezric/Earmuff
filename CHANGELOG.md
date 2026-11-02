@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.3]
+
+### Fixes
+
+- smooth settings and retain tray identity
+
 ## [0.2.2]
 
 ### Fixes
