@@ -5,3 +5,4 @@ src-tauri/gen/
 .agent-state/
 .local-state/
 *.log
+playwright-results/

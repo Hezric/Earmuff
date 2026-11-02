@@ -381,6 +381,7 @@ if (native) {
 motionReady = true;
 // The backend owns expiration; this updates only the visible countdown.
 setInterval(() => {
+  if (native) fit(true).catch(console.error);
   if (state.pauseRemaining > 0) {
     state.pauseRemaining--;
     render();

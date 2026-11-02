@@ -171,3 +171,10 @@ input[type="range"]:hover::-webkit-slider-thumb {
   display: flex;
   flex-direction: column;
 }
+
+@media (forced-colors: active) {
+  .switch { forced-color-adjust: none; background: Canvas; border-color: ButtonText; }
+  .switch::after { forced-color-adjust: none; background: ButtonText; }
+  .switch[aria-checked="true"] { background: Highlight; border-color: Highlight; }
+  .switch[aria-checked="true"]::after { background: HighlightText; }
+}
