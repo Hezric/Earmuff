@@ -15,7 +15,7 @@ test("language follows display language with English fallback", () => {
 test("browser mock protects new devices, folds others, and updates each control", () => {
   const state = mockState();
   assert.equal(state.devices.filter((d) => d.folded).length, 4);
-  assert.equal(state.devices.filter((d) => d.protected).length, 5);
+  assert.equal(state.devices.filter((d) => d.protected).length, 6);
   assert.equal(
     mockUpdate(state, { type: "setProtected", id: "usb", protected: true }).devices.find(
       (d) => d.id === "usb",

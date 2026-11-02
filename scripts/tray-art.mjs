@@ -6,7 +6,7 @@ export function draw(size, state, ink) {
   const cutout = state === "unprotected" ? "" : '<circle cx="18.4" cy="18.4" r="6.2" fill="black"/>';
   const symbol = state === "protected"
     ? '<path d="M16.2 18.5l1.5 1.5 2.9-3" fill="none" stroke="black" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>'
-    : '<rect x="16.7" y="16.3" width="1.1" height="4.2" rx=".5" fill="black"/><rect x="19" y="16.3" width="1.1" height="4.2" rx=".5" fill="black"/>';
+    : '<rect x="16.6" y="16.3" width="1.3" height="4.2" rx=".5" fill="black" stroke="none"/><rect x="18.9" y="16.3" width="1.3" height="4.2" rx=".5" fill="black" stroke="none"/>';
   const badge = state === "unprotected" ? "" : `<defs><mask id="symbol"><rect width="24" height="24" fill="white"/>${symbol}</mask></defs><circle cx="18.4" cy="18.4" r="4.8" stroke="none" mask="url(#symbol)"/>`;
   return `<g transform="scale(${size / 24})" fill="${ink}" stroke="${ink}" stroke-linecap="round" stroke-linejoin="round"><defs><mask id="headphones"><rect width="24" height="24" fill="white"/>${cutout}</mask></defs><g mask="url(#headphones)">${band}${left}${state === "unprotected" ? right : ""}</g>${badge}</g>`;
 }

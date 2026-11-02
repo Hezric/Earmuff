@@ -5,6 +5,9 @@
   <p>English | <a href="README_zh-Hans.md">简体中文</a></p>
 </div>
 
+<p align="center"><img src="docs/images/flyout.png" width="864" alt="Earmuff flyout in light and dark themes"><br><sub>Browser preview with simulated devices. Windows uses its native material.</sub></p>
+
+
 Earmuff watches your Windows output and softens sudden volume jumps. New devices are protected by default: full volume drops to 10%, and other levels above 42% are capped. Each device has its own switch.
 
 ## Install

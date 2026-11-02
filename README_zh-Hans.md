@@ -5,6 +5,9 @@
   <p><a href="README.md">English</a> | 简体中文</p>
 </div>
 
+<p align="center"><img src="docs/images/flyout.png" width="864" alt="Earmuff 浅色与深色浮窗"><br><sub>使用模拟设备的浏览器预览；Windows 中使用原生材质。</sub></p>
+
+
 Earmuff 守候 Windows 输出设备，防止音量突然升高。新设备默认受保护：音量跳到满格时降至 10%，其他高于 42% 的音量会被压回上限。每台设备都可单独开关保护。
 
 ## 安装

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2]
+
+### Fixes
+
+- align icon weight and add presentation checks
+
 ## [0.2.1]
 
 ### Fixes
