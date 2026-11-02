@@ -6,10 +6,12 @@ Use a `<type>/<short-desc>` branch and signed, scoped Conventional Commits, such
 
 Run the checks in [CI](.github/workflows/ci.yml). Keep audio tests simulated. Launching Earmuff immediately enables protection and can lower the real default output's volume; get the user's authorization before a hardware check. `vp run dev` previews only the frontend and is safe.
 
-On Windows 11, install stable MSVC Rust, Visual Studio C++ Build Tools, Node.js LTS, WebView2 and Vite+. Run `vp install --frozen-lockfile`, then `vp exec tauri build --ci --no-bundle -- --locked`. The executable is `src-tauri/target/release/earmuff.exe`. Build verification reads file metadata without launching; launching can change real audio or reconnect Wi-Fi. `vp run dev` is the simulated frontend preview.
+On Windows 11, install stable MSVC Rust, Visual Studio C++ Build Tools, Node.js LTS, WebView2 and Vite+. Run `vp install --frozen-lockfile`, then `vp run build:app`. The executable is `src-tauri/target/release/earmuff.exe`. Build verification reads file metadata without launching; launching can change real audio or reconnect Wi-Fi. `vp run dev` is the simulated frontend preview.
 
 Open one PR per coherent change with the behavior and test results. Required jobs are `test` and `policy`. Main requires signed, tested, linear history. Rebase stale branches locally and re-sign, then use `--force-with-lease` only on your branch. Maintainers squash-merge using the PR title and body and verify the resulting signature. Weekly grouped Dependabot updates use the same checks and squash policy.
 
 Release only on the user's instruction. The reminder issue never authorizes publication. The release workflow consumes a tested, signed annotated version tag; protected tags are immutable. See the release procedure in AGENTS.md.
 
 Contributions are licensed under MIT. Report security issues privately through the repository Security tab when available.
+
+Use `vp run test:rust` for Rust tests. Both native entries use the [project build cache](docs/features/build-cache.md); run `pwsh -NoProfile -File scripts/test-build-cache.ps1` to verify its cleanup.

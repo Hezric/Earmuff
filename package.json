@@ -10,7 +10,9 @@
     "test": "node --test src/*.test.js",
     "tauri": "tauri",
     "icons": "node scripts/tray-icons.mjs",
-    "test:browser": "vp exec playwright test"
+    "test:browser": "vp exec playwright test",
+    "build:app": "pwsh -NoProfile -File scripts/with-build-cache.ps1 vp exec tauri build --ci --no-bundle -- --locked",
+    "test:rust": "pwsh -NoProfile -File scripts/with-build-cache.ps1 cargo test --manifest-path src-tauri/Cargo.toml --locked"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans-sc": "^5.3.1",
