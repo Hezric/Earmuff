@@ -7,7 +7,7 @@ geometryChecks(test, expect, { ...mockState(), language: 'en' });
 materialChecks(test, expect, { ...mockState(), language: 'en' });
 
 test('high contrast keeps protection switch states visible', async ({ page }) => {
-  await page.emulateMedia({ forcedColors: 'active' });
+  await page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' });
   await page.goto('/?theme=light');
   for (const checked of ['true', 'false']) {
     const toggle = page.locator(`.switch[aria-checked="${checked}"]`).first();
