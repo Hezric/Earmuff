@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1]
+
+### Fixes
+
+- consume native geometry and shared surface (#13)
+
 ## [0.2.0]
 
 ### Features
