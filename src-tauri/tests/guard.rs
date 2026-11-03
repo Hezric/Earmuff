@@ -73,6 +73,49 @@ fn protection_through_audio_boundary() {
     }
 }
 #[test]
+fn current_output_stays_visible_and_returns_to_its_normal_group() {
+    let mut audio = SimulatedAudio {
+        endpoints: vec![
+            endpoint("usb", false, false),
+            endpoint("virtual", true, false),
+            endpoint("display", false, true),
+        ],
+        ..SimulatedAudio::default()
+    };
+    let mut guard = Guard::new(Settings::default());
+    guard.refresh(&mut audio).unwrap();
+    guard.set_protected("virtual", false).unwrap();
+    for (current, folded) in [
+        (Some("virtual"), [false, false, true]),
+        (Some("display"), [false, true, false]),
+        (Some("usb"), [false, true, true]),
+        (None, [false, true, true]),
+    ] {
+        audio.current = current.map(str::to_owned);
+        guard.sync_default(&mut audio).unwrap();
+        let state = guard.state(0);
+        assert_eq!(state.current.as_deref(), current);
+        assert_eq!(
+            state.devices.iter().map(|d| d.folded).collect::<Vec<_>>(),
+            folded,
+            "current={current:?}"
+        );
+        assert_eq!(
+            state
+                .devices
+                .iter()
+                .map(|d| (d.id.as_str(), d.kind.as_str(), d.protected))
+                .collect::<Vec<_>>(),
+            [
+                ("usb", "speaker", true),
+                ("virtual", "software", false),
+                ("display", "display", true)
+            ]
+        );
+    }
+    assert!(audio.writes.is_empty());
+}
+#[test]
 fn discovery_folds_by_class_even_after_default_use_and_restart() {
     let mut audio = SimulatedAudio {
         endpoints: vec![

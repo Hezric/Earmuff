@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.5]
+
+### Fixes
+
+- bound cargo caches per checkout
+
+- keep the active output in the main list
+
 ## [0.2.4]
 
 ### Fixes

@@ -178,7 +178,7 @@ impl Guard {
                     }
                     .into(),
                     protected: self.settings.devices.get(&d.id).is_none_or(|s| s.protected),
-                    folded: d.folded(),
+                    folded: d.folded() && self.current.as_deref() != Some(d.id.as_str()),
                 })
                 .collect(),
             current: self.current.clone(),
