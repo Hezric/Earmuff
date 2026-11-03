@@ -36,9 +36,11 @@ https://github.com/vercel-labs/skills; Node.js 22.20+). Verify its path and cont
 
 ## Use
 
-Click the tray icon to open the flyout; right-click to pause, resume, or quit. Choose devices and limits in settings. An unprotected device is left untouched; restarting resumes protection. Settings live in `%APPDATA%\Earmuff\Earmuff.toml`.
+Click the tray icon to open the flyout; right-click to pause, resume, or quit. Choose devices and limits in settings. An unprotected device is left untouched; restarting resumes protection. Settings default to `%APPDATA%\Earmuff\Earmuff.toml`.
 
 Earmuff limits Windows volume percentages, not measured sound pressure.
+
+Scoop enables portable data automatically. Outside Scoop, stop the app and create an empty `portable` file beside the executable; settings then use `data/Earmuff.toml`. See the behavior guide below before migrating existing settings.
 
 [Usage and behavior](https://github.com/Hezric/Earmuff/blob/main/docs/features/volume-guard.md) · [Contribute and automated tests](https://github.com/Hezric/Earmuff/blob/main/CONTRIBUTING.md) · [MIT license](https://github.com/Hezric/Earmuff/blob/main/LICENSE) · [Third-party notices](https://github.com/Hezric/Earmuff/blob/main/THIRD-PARTY-NOTICES.md)
 

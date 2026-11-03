@@ -37,11 +37,11 @@ pub fn run() {
         ])
         .setup(|app| {
             shell::install(app.handle())?;
-            let path = std::env::var_os("APPDATA")
-                .map(std::path::PathBuf::from)
-                .ok_or("APPDATA is not available")?
-                .join("Earmuff")
-                .join("Earmuff.toml");
+            let path = linen_tray::settings_path(
+                &std::env::current_exe()?,
+                std::env::var_os("APPDATA").as_deref(),
+                "Earmuff",
+            )?;
             app.manage(runtime::start(app.handle().clone(), path)?);
             Ok(())
         })

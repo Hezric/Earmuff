@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0]
+
+### Features
+
+- support portable application data
+
 ## [0.2.5]
 
 ### Fixes
