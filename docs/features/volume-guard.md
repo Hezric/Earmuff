@@ -6,20 +6,19 @@ Settings default to `%APPDATA%\Earmuff\Earmuff.toml`, with defaults defined in `
 
 Malformed TOML, unknown fields and invalid values activate safe defaults and show an error without silently overwriting the original file during discovery. User edits write a replacement through a synced temporary file. Save and audio errors are visible in the flyout and tray tooltip.
 
-The resident app owns a notification worker and tray icon, with no initial webview or login registration. The shared [Linen shell](https://github.com/Hezric/Linen/blob/v0.1.9/docs/features/tray-shell.md) owns placement, the transparent host, motion and dismissal. Its UI package supplies the shell, current card, pause presets, language and about controls. The panel stays at the work-area bottom-right and slides from the right; height changes grow upward around a stationary footer. Open panels refresh desktop geometry on the existing one-second UI tick, including unchanged content; each reopening resolves geometry again. Browser previews use the same anchor. The custom duration input uses a bottom accent on focus without changing text geometry. The flyout begins directly with the current card. Settings retain the protection sliders and saved custom pause duration. Enter or focus loss saves valid input; invalid input preserves the saved duration and displays an error. Editing duration preserves an active pause deadline. English and Simplified Chinese follow Windows unless explicitly selected.
+The resident app owns a notification worker and tray icon, with no initial webview or login registration. The shared [Linen shell](https://github.com/Hezric/Linen/blob/v0.3.0/docs/features/tray-shell.md) owns placement, the transparent host, motion and dismissal. Its UI package supplies the shell, current card, pause presets, language and about controls. The panel stays at the work-area bottom-right and slides from the right; height changes grow upward around a stationary footer. Open panels refresh desktop geometry on the existing one-second UI tick, including unchanged content; each reopening resolves geometry again. Browser previews use the same anchor. The custom duration input uses a bottom accent on focus without changing text geometry. The flyout begins directly with the current card. Settings retain the protection sliders and saved custom pause duration. Enter or focus loss saves valid input; invalid input preserves the saved duration and displays an error. Editing duration preserves an active pause deadline. English and Simplified Chinese follow Windows unless explicitly selected.
 
 A round check badge on the headphones means the current output is protected; plain headphones mean it is unprotected or absent, and a round pause badge indicates a pause. All states use full-contrast taskbar ink and a lighter stroke calibrated beside Segoe Fluent system icons at 16–48 physical pixels, for normal and small taskbars. App state and audio writes stay here; shared shell changes are made in Linen. Inter and shared UI assets come from the tagged UI package; Chinese subsets are generated from application and shared strings.
 
 `vp run dev` is a browser-only mock preview and never accesses Windows audio. `vp run test` checks the browser model. `cargo test --manifest-path src-tauri/Cargo.toml --locked` uses simulated audio. The ignored `audio::tests::enumerate_only` test reads endpoint metadata only; running it explicitly never reads or writes volume or starts the app. Real notification latency, tray placement, live taskbar changes, and webview release require an authorized native session.
 
 Scoop installations retain the existing `current` startup entry and use Linen's
-[persisted runtime route](https://github.com/Hezric/Linen/blob/v0.1.9/docs/features/tray-shell.md)
+[persisted runtime route](https://github.com/Hezric/Linen/blob/v0.3.0/docs/features/tray-shell.md)
 to keep the physical tray executable path stable across updates. Scoop enables portable mode in the persisted runtime. Settings live in
 `persist/earmuff/runtime/data/Earmuff.toml`; WebView2 data uses
 the sibling `data/webview` directory. The first portable update copies an existing
 APPDATA settings file only when no portable file exists, leaving the original
-in place. Later updates preserve portable settings. Neither app self-updates. The first migration may require placing the
-new tray identity once; Windows tray preferences are never rewritten.
+in place. Later updates preserve portable settings. Earmuff does not self-update. Windows tray preferences are never rewritten.
 
 Tray hover tooltips show only the current status in English or Simplified Chinese,
 without the application name or a dash prefix. Before the first status arrives,
@@ -28,6 +27,5 @@ the tooltip is unset.
 To enable portable mode outside Scoop, stop the app, back up the APPDATA settings,
 copy them to `data/Earmuff.toml` beside the executable, and create an empty file named
 `portable` beside that executable. Existing portable settings take precedence;
-removing the marker selects APPDATA again. Portable mode does not suppress the
-app's audio or network behavior. The marker and data belong beside the running
+removing the marker selects APPDATA again. Portable mode still enables volume protection on launch. The marker and data belong beside the running
 executable, which is the persisted runtime for Scoop installations.

@@ -105,7 +105,8 @@ fn portable_settings_preserve_the_legacy_copy_and_save_beside_the_runtime() {
         original.save(&legacy)?;
         let original_bytes = std::fs::read(&legacy)?;
         std::fs::write(executable.parent().unwrap().join("portable"), b"")?;
-        let portable = linen_tray::settings_path(&executable, Some(roaming.as_os_str()), "Earmuff")?;
+        let portable =
+            linen_tray::settings_path(&executable, Some(roaming.as_os_str()), "Earmuff")?;
         assert_eq!(portable, root.join("应用/runtime/data/Earmuff.toml"));
         std::fs::create_dir_all(portable.parent().unwrap())?;
         std::fs::copy(&legacy, &portable)?;
