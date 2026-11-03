@@ -90,3 +90,35 @@ fn invalid_toml_preserves_the_file_and_repeated_saves_stay_valid() {
     std::fs::remove_dir_all(directory).unwrap();
     result.unwrap();
 }
+
+#[cfg(windows)]
+#[test]
+fn portable_settings_preserve_the_legacy_copy_and_save_beside_the_runtime() {
+    let root = std::env::temp_dir().join(format!("earmuff-portable-{}", std::process::id()));
+    std::fs::create_dir(&root).unwrap();
+    let checked = std::panic::catch_unwind(|| -> Result<(), Box<dyn std::error::Error>> {
+        let roaming = root.join("roaming");
+        let executable = root.join("应用/runtime/earmuff.exe");
+        std::fs::create_dir_all(executable.parent().unwrap())?;
+        let legacy = linen_tray::settings_path(&executable, Some(roaming.as_os_str()), "Earmuff")?;
+        let original = Settings::parse("cap=35\ndrop=7\nlanguage=\"zh\"\npause_minutes=45\n[devices.\"virtual 中文\"]\nprotected=false\nwas_default=true\n")?;
+        original.save(&legacy)?;
+        let original_bytes = std::fs::read(&legacy)?;
+        std::fs::write(executable.parent().unwrap().join("portable"), b"")?;
+        let portable = linen_tray::settings_path(&executable, Some(roaming.as_os_str()), "Earmuff")?;
+        assert_eq!(portable, root.join("应用/runtime/data/Earmuff.toml"));
+        std::fs::create_dir_all(portable.parent().unwrap())?;
+        std::fs::copy(&legacy, &portable)?;
+        let (mut loaded, error) = Settings::load(&portable);
+        assert!(error.is_none());
+        assert_eq!(loaded, original);
+        loaded.pause_minutes = 90;
+        loaded.save(&portable)?;
+        assert_eq!(Settings::load(&portable).0, loaded);
+        assert_eq!(std::fs::read(&legacy)?, original_bytes);
+        assert_eq!(Settings::load(&legacy).0, original);
+        Ok(())
+    });
+    std::fs::remove_dir_all(root).unwrap();
+    checked.unwrap().unwrap();
+}

@@ -2,7 +2,7 @@
 
 Earmuff watches the Windows default render endpoint (`eConsole`) through Core Audio device and endpoint-volume notifications. Audio writes are serialized on one COM worker behind `AudioBackend`. For a protected output, a rounded full-volume reading (99.5% or higher, matching the prior tool's rounding) drops to the configured drop level; other readings above the cap clamp to the cap. Unprotected outputs receive no writes. Pausing stops writes for the saved duration (60 minutes by default, 1–720 whole minutes) using a monotonic deadline; resume enforces immediately. Restarting resumes protection.
 
-Settings use `%APPDATA%\Earmuff\Earmuff.toml`, with defaults defined in `src-tauri/src/settings.rs`. The TOML file uses typed `cap`, `drop`, `language`, `pause_minutes` and `devices` fields. Device tables are keyed by quoted stable endpoint IDs, with boolean `protected` and `was_default` values. New outputs are protected. The current output always appears in the main list, including software and display outputs; once it stops being current, it returns to its normal group. Expanding Other devices exposes the same individual protection switches as the main list. Classification uses Windows device ancestry and endpoint form factor rather than friendly-name matches. Inactive software audio under `ROOT` and display audio fold into Other devices. Physical USB speakers stay in the main list. If classification metadata is unavailable, leave the output in the main list with protection on.
+Settings default to `%APPDATA%\Earmuff\Earmuff.toml`, with defaults defined in `src-tauri/src/settings.rs`. The TOML file uses typed `cap`, `drop`, `language`, `pause_minutes` and `devices` fields. Device tables are keyed by quoted stable endpoint IDs, with boolean `protected` and `was_default` values. New outputs are protected. The current output always appears in the main list, including software and display outputs; once it stops being current, it returns to its normal group. Expanding Other devices exposes the same individual protection switches as the main list. Classification uses Windows device ancestry and endpoint form factor rather than friendly-name matches. Inactive software audio under `ROOT` and display audio fold into Other devices. Physical USB speakers stay in the main list. If classification metadata is unavailable, leave the output in the main list with protection on.
 
 Malformed TOML, unknown fields and invalid values activate safe defaults and show an error without silently overwriting the original file during discovery. User edits write a replacement through a synced temporary file. Save and audio errors are visible in the flyout and tray tooltip.
 
@@ -14,10 +14,20 @@ A round check badge on the headphones means the current output is protected; pla
 
 Scoop installations retain the existing `current` startup entry and use Linen's
 [persisted runtime route](https://github.com/Hezric/Linen/blob/v0.1.9/docs/features/tray-shell.md)
-to keep the physical tray executable path stable across updates. Settings remain
-in their existing APPDATA location. The first migration may require placing the
+to keep the physical tray executable path stable across updates. Scoop enables portable mode in the persisted runtime. Settings live in
+`persist/earmuff/runtime/data/Earmuff.toml`; WebView2 data uses
+the sibling `data/webview` directory. The first portable update copies an existing
+APPDATA settings file only when no portable file exists, leaving the original
+in place. Later updates preserve portable settings. Neither app self-updates. The first migration may require placing the
 new tray identity once; Windows tray preferences are never rewritten.
 
 Tray hover tooltips show only the current status in English or Simplified Chinese,
 without the application name or a dash prefix. Before the first status arrives,
 the tooltip is unset.
+
+To enable portable mode outside Scoop, stop the app, back up the APPDATA settings,
+copy them to `data/Earmuff.toml` beside the executable, and create an empty file named
+`portable` beside that executable. Existing portable settings take precedence;
+removing the marker selects APPDATA again. Portable mode does not suppress the
+app's audio or network behavior. The marker and data belong beside the running
+executable, which is the persisted runtime for Scoop installations.
