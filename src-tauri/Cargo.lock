@@ -849,7 +849,7 @@ checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
 name = "earmuff"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "linen-tray",
  "serde",
@@ -1962,8 +1962,8 @@ dependencies = [
 
 [[package]]
 name = "linen-tray"
-version = "0.3.0"
-source = "git+https://github.com/Hezric/Linen.git?tag=v0.3.0#d41ae0323ee74f2aee14b77f6a8185421b5060ac"
+version = "0.3.1"
+source = "git+https://github.com/Hezric/Linen.git?tag=v0.3.1#25e6007413fd6c4f93fe32d71e4d8069e5537a9e"
 dependencies = [
  "serde",
  "tauri",

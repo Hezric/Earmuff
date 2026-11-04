@@ -36,7 +36,7 @@ https://github.com/vercel-labs/skills; Node.js 22.20+). Verify its path and cont
 
 ## Use
 
-Click the tray icon to open the flyout; right-click to pause, resume, or quit. Choose devices and limits in settings. An unprotected device is left untouched; restarting resumes protection. Settings default to `%APPDATA%\Earmuff\Earmuff.toml`.
+Click the tray icon to open the flyout; right-click to pause, resume, or quit. Repeated clicks during opening keep the pending flyout open; a click after opening completes closes it. Choose devices and limits in settings. An unprotected device is left untouched; restarting resumes protection. Settings default to `%APPDATA%\Earmuff\Earmuff.toml`.
 
 Earmuff limits Windows volume percentages, not measured sound pressure.
 

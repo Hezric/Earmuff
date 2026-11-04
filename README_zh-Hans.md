@@ -35,7 +35,7 @@ npx skills add Hezric/Earmuff -g（Vercel skills CLI，https://github.com/vercel
 
 ## 使用
 
-单击托盘图标打开面板，右键可暂停、恢复或退出；在设置中选择设备和音量限制。关闭保护的设备不会被调整；重启后恢复保护。设置默认保存在 `%APPDATA%\Earmuff\Earmuff.toml`。
+单击托盘图标打开面板，右键可暂停、恢复或退出；打开过程中连续点击会保留打开请求，面板展开完成后再点击即可关闭。在设置中选择设备和音量限制。关闭保护的设备不会被调整；重启后恢复保护。设置默认保存在 `%APPDATA%\Earmuff\Earmuff.toml`。
 
 Earmuff 限制的是 Windows 音量百分比，并非实测声压。
 
